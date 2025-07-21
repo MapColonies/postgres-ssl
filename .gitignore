@@ -1,0 +1,17 @@
+# SSL Certificates and Keys - NEVER commit these!
+keys/
+certs/
+*.pem
+*.key
+*.crt
+*.csr
+*.srl
+
+# Docker Compose environment files
+.env
+
+# Docker volumes
+pgdata/
+
+# Logs
+*.log
