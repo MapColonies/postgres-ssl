@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  postgres-ssl:
+    build:
+      context: .
+      dockerfile: Dockerfile.compose
+    container_name: postgres-ssl
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=mydb
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=temp_password_not_used
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./cert.pem:/var/lib/postgresql/server.crt:ro
+      - ./key.pem:/var/lib/postgresql/server.key:ro
+      - ./certs/rootCA.crt:/var/lib/postgresql/rootCA.crt:ro
+    networks:
+      - postgres_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  postgres_network:
+    driver: bridge
